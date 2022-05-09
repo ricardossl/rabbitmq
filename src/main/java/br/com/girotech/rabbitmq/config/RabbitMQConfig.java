@@ -34,7 +34,7 @@ public class RabbitMQConfig {
     @Bean
     public ConnectionFactory connectionFactory() {
         log.info("Conectando com RabbitMq em {}:{}", this.host, this.port);
-        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(this.host, this.port);
+        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(this.host, this.port); // Não é necessário criar uma conexão para cada listener
         cachingConnectionFactory.setVirtualHost(this.virtualhost);
         cachingConnectionFactory.setUsername(this.username);
         cachingConnectionFactory.setPassword(this.password);
@@ -49,7 +49,8 @@ public class RabbitMQConfig {
     @Bean
     public AmqpAdmin amqpAdmin() {
         return new RabbitAdmin(connectionFactory());
-    }
+    } //The RabbitAdmin component can declare exchanges, queues and bindings on startup.
+    // It does this lazily, through a ConnectionListener, so if the broker is not present on startup it doesn't matter.
 
     @Bean
     public RabbitTemplate rabbitTemplate() {
